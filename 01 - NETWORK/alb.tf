@@ -2,22 +2,23 @@
 resource "aws_lb" "ext-alb" {
   name     = var.name
   internal = false
-  security_groups = [var.public-sg]
+  security_groups = [aws_security_group.ext-alb-sg.id,
+  ]
 
   subnets = [
-    var.public-subnet-1,
-    var.public-subnet-2,
+    aws_subnet.public[0].id,
+    aws_subnet.public[1].id
   ]
 
    tags = merge(
     var.tags,
     {
-      Name = var.name
+      Name = "ACS-ext-alb"
     },
   )
 
-  ip_address_type    = var.ip_address_type
-  load_balancer_type = var.load_balancer_type
+  ip_address_type    = "ipv4"
+  load_balancer_type = "application"
 }
 
 # cria o grupo alvo para o LB externo
@@ -35,7 +36,7 @@ resource "aws_lb_target_group" "nginx-tgt" {
   port        = 443
   protocol    = "HTTPS"
   target_type = "instance"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
 }
 
 # Cria o listner do LB
@@ -57,10 +58,12 @@ resource "aws_lb_listener" "nginx-listner" {
 resource "aws_lb" "ialb" {
   name     = "ialb"
   internal = true
-  security_groups = [var.private-sg]
+  security_groups = [aws_security_group.int-alb-sg.id,
+  ]
 
-  subnets = [var.private-subnet-1,
-    var.private-subnet-2,]
+  subnets = [aws_subnet.private[0].id,
+    aws_subnet.private[1].id
+    ]
 
   tags = merge(
     var.tags,
@@ -69,8 +72,8 @@ resource "aws_lb" "ialb" {
     },
   )
 
-  ip_address_type    = var.ip_address_type
-  load_balancer_type = var.load_balancer_type
+  ip_address_type    = "ipv4"
+  load_balancer_type = "application"
 }
 
 # grupo wordpress
@@ -89,7 +92,7 @@ resource "aws_lb_target_group" "wordpress-tgt" {
   port        = 443
   protocol    = "HTTPS"
   target_type = "instance"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
 }
 
 # grupo tooling
