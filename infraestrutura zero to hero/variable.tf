@@ -16,17 +16,25 @@ variable "enable_dns_hostnames" {
     }
 #nuemro de publicas subnets a adicionar
 variable "preferred_number_of_public_subnets" {
-  type = number
+  default = null
 }
 
 #nuemro de privadas subnets a adicionar
 variable "preferred_number_of_private_subnets" {
-  type = number
+  default = null
 }
 variable "name" {
     type = string
+    default = "jeff"
     
 }
 variable "tags" {
+    type    = map(string)
     default = {}
+}
+variable "ami" {
+  type        = string
+}
+variable "keypair" {
+  type        = string
 }
