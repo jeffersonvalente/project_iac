@@ -27,6 +27,12 @@ resource "aws_subnet" "public" {
   cidr_block              = cidrsubnet(var.vpc_cidr, 4 , count.index + 1)
   map_public_ip_on_launch = true
   availability_zone       = data.aws_availability_zones.available.names[count.index]
+tags = merge(
+    var.tags,
+    {
+      Name = format("%s-PublicSubnet-%s", var.name, count.index)
+    },
+  )
 }
 
 # cria um numero de subnets privadas igual a count, adiciona o bloco conforme o contador e adiciona as zonas conforme o contador
