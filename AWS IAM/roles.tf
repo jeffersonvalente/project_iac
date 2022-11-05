@@ -1,6 +1,6 @@
 #cria a role para que a ec2 possa acessar os recursos da aws
 resource "aws_iam_role" "ec2_instance_role" {
-name = "ec2_instance_role"
+name = "aws_instance_profile_ec2"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

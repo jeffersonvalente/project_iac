@@ -1,6 +1,6 @@
 #cria uma poilitica de permissoes para a ec2
 resource "aws_iam_policy" "policy" {
-  name        = "ec2_instance_policy"
+  name        = "aws_instance_profile_ec2"
   description = "politica de teste da ec2"
   policy = jsonencode({
     Version = "2012-10-17"
