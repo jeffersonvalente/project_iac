@@ -18,7 +18,7 @@ resource "aws_autoscaling_notification" "jefferson_notifications" {
     "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
   ]
 
-  topic_arn = aws_sns_topic.jefferson-sns.arn
+  topic_arn = "arn:aws:sns:us-east-1:864885787377:jefferson-sns"
 }
 
 # template para o bastion

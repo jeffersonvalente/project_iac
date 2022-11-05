@@ -38,3 +38,15 @@ variable "ami" {
 variable "keypair" {
   type        = string
 }
+variable "account_no" {
+  type        = number
+}
+variable "master-username" {
+  type        = string
+}
+variable "master-password" {
+  type        = string
+}
+variable "db_name" {
+  type        = string
+}
