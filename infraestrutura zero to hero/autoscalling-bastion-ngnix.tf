@@ -1,5 +1,5 @@
 # cria os alarmes de autoscaling
-resource "aws_sns_topic" "cynthia-sns" {
+resource "aws_sns_topic" "jefferson-sns" {
 name = "Default_CloudWatch_Alarms_Topic"
 }
 
@@ -37,7 +37,7 @@ resource "aws_launch_template" "bastion-launch-template" {
   }
 
   key_name = var.keypair
-
+  
   placement {
     availability_zone = "random_shuffle.az_list.result"
   }

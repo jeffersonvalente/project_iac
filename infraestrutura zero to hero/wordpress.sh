@@ -18,8 +18,8 @@ cp -R /wordpress/* /var/www/html/
 cd /var/www/html/
 touch healthstatus
 sed -i "s/localhost/midatabase.ctzmlixwicc8.us-east-1.rds.amazonaws.com/g" wp-config.php 
-sed -i "s/username_here/admin/g" wp-config.php 
-sed -i "s/password_here/12345678/g" wp-config.php 
-sed -i "s/database_name_here/wordpressdb/g" wp-config.php 
+sed -i "s/jefferson.valente/admin/g" wp-config.php 
+sed -i "s/Lucio55!/12345678/g" wp-config.php 
+sed -i "s/jv/wordpressdb/g" wp-config.php 
 chcon -t httpd_sys_rw_content_t /var/www/html/ -R
 systemctl restart httpd
