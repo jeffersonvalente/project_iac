@@ -9,7 +9,7 @@ resource "aws_launch_template" "wordpress-launch-template" {
     name = aws_iam_instance_profile.ip.id
   }
 
-  key_name = var.keypair
+  #key_name = var.keypair
 
   placement {
     availability_zone = "random_shuffle.az_list.result"
@@ -23,11 +23,11 @@ resource "aws_launch_template" "wordpress-launch-template" {
     resource_type = "instance"
 
     tags = merge(
-    var.tags,
-    {
-      Name = "wordpress-launch-template"
-    },
-  )
+      var.tags,
+      {
+        Name = "wordpress-launch-template"
+      },
+    )
 
   }
 
@@ -66,7 +66,7 @@ resource "aws_autoscaling_attachment" "asg_attachment_wordpress" {
   alb_target_group_arn   = aws_lb_target_group.wordpress-tgt.arn
 }
 
-# template tooling
+# launch template for toooling
 resource "aws_launch_template" "tooling-launch-template" {
   image_id               = var.ami
   instance_type          = "t2.micro"
@@ -76,7 +76,7 @@ resource "aws_launch_template" "tooling-launch-template" {
     name = aws_iam_instance_profile.ip.id
   }
 
-  key_name = var.keypair
+  #key_name = var.keypair
 
   placement {
     availability_zone = "random_shuffle.az_list.result"
@@ -89,12 +89,12 @@ resource "aws_launch_template" "tooling-launch-template" {
   tag_specifications {
     resource_type = "instance"
 
-  tags = merge(
-    var.tags,
-    {
-      Name = "tooling-launch-template"
-    },
-  )
+    tags = merge(
+      var.tags,
+      {
+        Name = "tooling-launch-template"
+      },
+    )
 
   }
 

@@ -1,8 +1,9 @@
 # LB externo
 resource "aws_lb" "ext-alb" {
-  name     = var.name
+  name     = "ext-alb"
   internal = false
-  security_groups = [aws_security_group.ext-alb-sg.id,
+  security_groups = [
+    aws_security_group.ext-alb-sg.id,
   ]
 
   subnets = [
@@ -10,7 +11,7 @@ resource "aws_lb" "ext-alb" {
     aws_subnet.public[1].id
   ]
 
-   tags = merge(
+  tags = merge(
     var.tags,
     {
       Name = "ACS-ext-alb"
@@ -20,6 +21,7 @@ resource "aws_lb" "ext-alb" {
   ip_address_type    = "ipv4"
   load_balancer_type = "application"
 }
+
 
 # cria o grupo alvo para o LB externo
 
@@ -39,6 +41,7 @@ resource "aws_lb_target_group" "nginx-tgt" {
   vpc_id      = aws_vpc.main.id
 }
 
+
 # Cria o listner do LB
 
 resource "aws_lb_listener" "nginx-listner" {
@@ -53,17 +56,20 @@ resource "aws_lb_listener" "nginx-listner" {
   }
 }
 
+
 # Internal LB
 
 resource "aws_lb" "ialb" {
   name     = "ialb"
   internal = true
-  security_groups = [aws_security_group.int-alb-sg.id,
+  security_groups = [
+    aws_security_group.int-alb-sg.id,
   ]
 
-  subnets = [aws_subnet.private[0].id,
+  subnets = [
+    aws_subnet.private[0].id,
     aws_subnet.private[1].id
-    ]
+  ]
 
   tags = merge(
     var.tags,
@@ -142,7 +148,7 @@ resource "aws_lb_listener_rule" "tooling-listener" {
 
   condition {
     host_header {
-      values = ["tooling.jeffersonvalente.com.br"]
+      values = ["tooling.mosesitoya.link"]
     }
   }
 }

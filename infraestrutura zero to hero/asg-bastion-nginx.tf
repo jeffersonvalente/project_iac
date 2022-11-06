@@ -1,9 +1,8 @@
-# cria os alarmes de autoscaling
+#### creating sns topic for all the auto scaling groups
 resource "aws_sns_topic" "jefferson-sns" {
-name = "Default_CloudWatch_Alarms_Topic"
+  name = "Default_CloudWatch_Alarms_Topic"
 }
 
-#cria as notificações sns
 resource "aws_autoscaling_notification" "jefferson_notifications" {
   group_names = [
     aws_autoscaling_group.bastion-asg.name,
@@ -18,13 +17,11 @@ resource "aws_autoscaling_notification" "jefferson_notifications" {
     "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
   ]
 
-  topic_arn = "arn:aws:sns:us-east-1:864885787377:jefferson-sns"
+  topic_arn = aws_sns_topic.jefferson-sns.arn
 }
 
-# template para o bastion
-
 resource "random_shuffle" "az_list" {
-  input        = data.aws_availability_zones.available.names
+  input = data.aws_availability_zones.available.names
 }
 
 resource "aws_launch_template" "bastion-launch-template" {
@@ -36,8 +33,8 @@ resource "aws_launch_template" "bastion-launch-template" {
     name = aws_iam_instance_profile.ip.id
   }
 
-  key_name = var.keypair
-  
+  #key_name = var.keypair
+
   placement {
     availability_zone = "random_shuffle.az_list.result"
   }
@@ -49,26 +46,26 @@ resource "aws_launch_template" "bastion-launch-template" {
   tag_specifications {
     resource_type = "instance"
 
-   tags = merge(
-    var.tags,
-    {
-      Name = "bastion-launch-template"
-    },
-  )
+    tags = merge(
+      var.tags,
+      {
+        Name = "bastion-launch-template"
+      },
+    )
   }
 
   user_data = filebase64("${path.module}/bastion.sh")
 }
 
-# autoscalling hosts bastion
+# ---- Autoscaling for bastion  hosts
 
 resource "aws_autoscaling_group" "bastion-asg" {
   name                      = "bastion-asg"
   max_size                  = 2
-  min_size                  = 2
+  min_size                  = 1
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  desired_capacity          = 2
+  desired_capacity          = 1
 
   vpc_zone_identifier = [
     aws_subnet.public[0].id,
@@ -86,7 +83,8 @@ resource "aws_autoscaling_group" "bastion-asg" {
   }
 
 }
-# template autoscalling ngninx
+
+# launch template for nginx
 
 resource "aws_launch_template" "nginx-launch-template" {
   image_id               = var.ami
@@ -97,7 +95,7 @@ resource "aws_launch_template" "nginx-launch-template" {
     name = aws_iam_instance_profile.ip.id
   }
 
-  key_name =  var.keypair
+  #key_name = var.keypair
 
   placement {
     availability_zone = "random_shuffle.az_list.result"
@@ -111,17 +109,17 @@ resource "aws_launch_template" "nginx-launch-template" {
     resource_type = "instance"
 
     tags = merge(
-    var.tags,
-    {
-      Name = "nginx-launch-template"
-    },
-  )
+      var.tags,
+      {
+        Name = "nginx-launch-template"
+      },
+    )
   }
 
   user_data = filebase64("${path.module}/nginx.sh")
 }
 
-# autoscalling group nginx
+# ------ Autoscslaling group for reverse proxy nginx ---------
 
 resource "aws_autoscaling_group" "nginx-asg" {
   name                      = "nginx-asg"
@@ -149,9 +147,8 @@ resource "aws_autoscaling_group" "nginx-asg" {
 
 }
 
-# adiciona o group de autoscalling no load balance
+# attaching autoscaling group of nginx to external load balancer
 resource "aws_autoscaling_attachment" "asg_attachment_nginx" {
   autoscaling_group_name = aws_autoscaling_group.nginx-asg.id
   alb_target_group_arn   = aws_lb_target_group.nginx-tgt.arn
 }
-

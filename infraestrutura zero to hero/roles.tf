@@ -1,6 +1,6 @@
 #cria a role para que a ec2 possa acessar os recursos da aws
 resource "aws_iam_role" "ec2_instance_role" {
-name = "aws_instance_profile_ec2"
+  name = "ec2_instance_role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -24,8 +24,8 @@ name = "aws_instance_profile_ec2"
 }
 #cria uma poilitica de permissoes para a ec2
 resource "aws_iam_policy" "policy" {
-  name        = "aws_instance_profile_ec2"
-  description = "politica de teste da ec2"
+  name        = "ec2_instance_policy"
+  description = "A test policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -43,13 +43,19 @@ resource "aws_iam_policy" "policy" {
   tags = merge(
     var.tags,
     {
-      Name =  "aws assume policy"
+      Name = "aws assume policy"
     },
   )
 
 }
+
 #attach a politca ao IAM role
 resource "aws_iam_role_policy_attachment" "test-attach" {
-        role       = aws_iam_role.ec2_instance_role.name
-        policy_arn = aws_iam_policy.policy.arn
-    }
+  role       = aws_iam_role.ec2_instance_role.name
+  policy_arn = aws_iam_policy.policy.arn
+}
+
+resource "aws_iam_instance_profile" "ip" {
+  name = "aws_instance_profile_test"
+  role = aws_iam_role.ec2_instance_role.name
+}

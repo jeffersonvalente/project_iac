@@ -1,52 +1,76 @@
-#adiciona a variavel região
 variable "region" {
-        default = "us-east-1"
-    }
-#adiciona a variavel block de ip
+  default = "us-east-1"
+}
+
 variable "vpc_cidr" {
-        default = "10.16.0.0/16"
-    }
-#adiciona a variavel de dns
+  default = "10.16.0.0/16"
+}
+
 variable "enable_dns_support" {
-        default = "true"
-    }
-#adiciona a variavel de hostnames
+  default = "true"
+}
+
 variable "enable_dns_hostnames" {
-        default ="true" 
-    }
-#nuemro de publicas subnets a adicionar
+  default = "true"
+}
+
+variable "enable_classiclink" {
+  default = "false"
+}
+
+variable "enable_classiclink_dns_support" {
+  default = "false"
+}
+
 variable "preferred_number_of_public_subnets" {
   default = null
 }
 
-#nuemro de privadas subnets a adicionar
 variable "preferred_number_of_private_subnets" {
   default = null
 }
 variable "name" {
-    type = string
-    default = "terraform"
-    
+  type    = string
+  default = "terarform"
 }
+
 variable "tags" {
-    type    = map(string)
-    default = {}
+  description = "A mapping of tags to assign to all resources."
+  type        = map(string)
+  default     = {}
 }
+
 variable "ami" {
   type        = string
+  description = "AMI ID for the launch template"
 }
+
 variable "keypair" {
   type        = string
+  description = "key pair for the instances"
 }
+
 variable "account_no" {
   type        = number
+  description = "the account number"
 }
+
 variable "master-username" {
   type        = string
+  description = "RDS admin username"
 }
+
 variable "master-password" {
   type        = string
+  description = "RDS master password"
 }
+
+variable "environment" {
+  type        = string
+  description = "the type of enviroment"
+}
+
 variable "db_name" {
   type        = string
+  description = "name of db"
 }
